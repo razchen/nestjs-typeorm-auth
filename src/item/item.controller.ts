@@ -14,6 +14,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RequestWithUser } from 'src/types/Auth';
+import { UpdateTagsDto } from './dto/update-tags.dto';
 
 @Controller('items')
 @UseGuards(JwtAuthGuard)
@@ -52,5 +53,10 @@ export class ItemController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.itemService.remove(+id);
+  }
+
+  @Patch(':id/tags/update')
+  updateTags(@Param('id') id: string, @Body() updateTagsDto: UpdateTagsDto) {
+    return this.itemService.updateTags(+id, updateTagsDto);
   }
 }

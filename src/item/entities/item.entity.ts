@@ -3,11 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class Item {
@@ -22,6 +25,10 @@ export class Item {
 
   @Column({ type: 'text' })
   description: string;
+
+  @ManyToMany(() => Tag, (tag) => tag.items)
+  @JoinTable()
+  tags: Tag[];
 
   @CreateDateColumn()
   createdAt: Date;
