@@ -6,18 +6,27 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RequestWithUser } from 'src/types/Auth';
 
 @Controller('items')
+@UseGuards(JwtAuthGuard)
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
   @Post()
-  create(@Body() createItemDto: CreateItemDto) {
-    return this.itemService.create(2, createItemDto);
+  create(
+    @Request() req: RequestWithUser,
+    @Body() createItemDto: CreateItemDto,
+  ) {
+    const userId = req.user.id;
+    return this.itemService.create(+userId, createItemDto);
   }
 
   @Get()
@@ -31,8 +40,13 @@ export class ItemController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
-    return this.itemService.update(2, +id, updateItemDto);
+  update(
+    @Request() req: RequestWithUser,
+    @Param('id') id: string,
+    @Body() updateItemDto: UpdateItemDto,
+  ) {
+    const userId = req.user.id;
+    return this.itemService.update(+userId, +id, updateItemDto);
   }
 
   @Delete(':id')

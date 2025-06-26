@@ -1,4 +1,5 @@
 import { Item } from 'src/item/entities/item.entity';
+import { UserRole } from 'src/types/Auth';
 import {
   Column,
   CreateDateColumn,
@@ -17,11 +18,17 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
+
+  @Column({ select: false, default: null })
+  hashedRefreshToken: string;
+
+  @Column({ select: false, type: 'json' })
+  roles: UserRole[];
 
   @OneToMany(() => Item, (item) => item.user, {
     cascade: true,
